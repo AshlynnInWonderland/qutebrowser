@@ -22,6 +22,9 @@
 import sys
 import itertools
 import functools
+import os
+
+from urllib.parse import urlparse
 
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QTimer, QUrl
 from PyQt5.QtWidgets import QApplication, QStyleFactory
@@ -369,6 +372,16 @@ class WebView(QWebView):
         if url.isValid():
             self.cur_url = url
             self.url_text_changed.emit(url.toDisplayString())
+            """Change the style when the url changes -- move this to another file and improve it later"""
+            settings = QWebSettings.globalSettings()
+            path = os.path.expanduser('~/.config/qutebrowser/css/')
+            parsedurl = urlparse(url.toString()).netloc + '.css'
+            if os.path.isfile(path + parsedurl):
+                QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(path + parsedurl))
+            elif os.path.isfile(path + 'www.' + parsedurl):
+                QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(path + 'www.' + parsedurl))
+            else:
+                QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(os.path.expanduser('~/.config/qutebrowser/css/default.css')))
 
     @pyqtSlot('QMouseEvent')
     def on_mouse_event(self, evt):
