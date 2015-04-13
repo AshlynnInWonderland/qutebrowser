@@ -375,7 +375,6 @@ class WebView(QWebView):
 
             """Change the style when the url changes -- move this to another file and improve it later"""
             settings = self.settings()
-            print(settings)
             path = os.path.expanduser('~/.config/qutebrowser/css/')
             parsedurl = urlparse(url.toString()).netloc + '.css'
             if os.path.isfile(path + parsedurl):
@@ -414,6 +413,7 @@ class WebView(QWebView):
         elif ok:
             self._set_load_status(LoadStatus.warn)
         else:
+            QWebSettings.setUserStyleSheetUrl(self.settings(), QWebSettings.userStyleSheetUrl(QWebSettings.globalSettings()))
             self._set_load_status(LoadStatus.error)
         if not config.get('input', 'auto-insert-mode'):
             return
