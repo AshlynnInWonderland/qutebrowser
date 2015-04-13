@@ -373,16 +373,6 @@ class WebView(QWebView):
             self.cur_url = url
             self.url_text_changed.emit(url.toDisplayString())
 
-            """Change the style when the url changes -- move this to another file and improve it later"""
-            settings = self.settings()
-            path = os.path.expanduser('~/.config/qutebrowser/css/')
-            parsedurl = urlparse(url.toString()).netloc + '.css'
-            if os.path.isfile(path + parsedurl):
-                QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(path + parsedurl))
-            elif os.path.isfile(path + 'www.' + parsedurl):
-                QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(path + 'www.' + parsedurl))
-            else:
-                QWebSettings.setUserStyleSheetUrl(settings, QWebSettings.userStyleSheetUrl(QWebSettings.globalSettings()))
 
     @pyqtSlot('QMouseEvent')
     def on_mouse_event(self, evt):
@@ -398,6 +388,18 @@ class WebView(QWebView):
         self.viewing_source = False
         self._has_ssl_errors = False
         self._set_load_status(LoadStatus.loading)
+        
+        """Change the style when the url changes -- move this to another file and improve it later"""
+        url = self.cur_url
+        settings = self.settings()
+        path = os.path.expanduser('~/.config/qutebrowser/css/')
+        parsedurl = urlparse(url.toString()).netloc + '.css'
+        if os.path.isfile(path + parsedurl):
+            QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(path + parsedurl))
+        elif os.path.isfile(path + 'www.' + parsedurl):
+            QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(path + 'www.' + parsedurl))
+        else:
+            QWebSettings.setUserStyleSheetUrl(settings, QWebSettings.userStyleSheetUrl(QWebSettings.globalSettings()))
 
     @pyqtSlot()
     def on_load_finished(self):
