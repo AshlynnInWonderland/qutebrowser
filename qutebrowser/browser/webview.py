@@ -375,6 +375,7 @@ class WebView(QWebView):
 
             """Change the style when the url changes -- move this to another file and improve it later"""
             settings = self.settings()
+            print(settings)
             path = os.path.expanduser('~/.config/qutebrowser/css/')
             parsedurl = urlparse(url.toString()).netloc + '.css'
             if os.path.isfile(path + parsedurl):
@@ -382,7 +383,7 @@ class WebView(QWebView):
             elif os.path.isfile(path + 'www.' + parsedurl):
                 QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(path + 'www.' + parsedurl))
             else:
-                QWebSettings.setUserStyleSheetUrl(settings, QUrl.fromLocalFile(os.path.expanduser('~/.config/qutebrowser/css/default.css')))
+                QWebSettings.setUserStyleSheetUrl(settings, QWebSettings.userStyleSheetUrl(QWebSettings.globalSettings()))
 
     @pyqtSlot('QMouseEvent')
     def on_mouse_event(self, evt):
