@@ -372,8 +372,9 @@ class WebView(QWebView):
         if url.isValid():
             self.cur_url = url
             self.url_text_changed.emit(url.toDisplayString())
+
             """Change the style when the url changes -- move this to another file and improve it later"""
-            settings = QWebSettings.globalSettings()
+            settings = self.settings()
             path = os.path.expanduser('~/.config/qutebrowser/css/')
             parsedurl = urlparse(url.toString()).netloc + '.css'
             if os.path.isfile(path + parsedurl):
